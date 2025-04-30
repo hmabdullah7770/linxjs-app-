@@ -8,8 +8,7 @@
     "preview": "rspeedy preview"
   },
   "dependencies": {
-    "@lynx-js/react": "^0.106.5",
-    "@lynx-js/web-core": "^0.13.0"
+    "@lynx-js/react": "^0.106.5"
   },
   "devDependencies": {
     "@lynx-js/qrcode-rsbuild-plugin": "^0.3.5",
