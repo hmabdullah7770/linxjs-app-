@@ -1,45 +1,51 @@
-import { useCallback, useEffect, useState } from '@lynx-js/react'
+// src/App.tsx
+import { useState, useEffect } from 'react';
+// Import MemoryRouter for non-browser environments and ensure Navigate is imported
+import { MemoryRouter, Routes, Route, Navigate } from 'react-router'; 
 
-import './App.css'
-import arrow from './assets/arrow.png'
-import lynxLogo from './assets/lynx-logo.png'
-import reactLynxLogo from './assets/react-logo.png'
+import AppScreens from './Stacks/AppScreens.jsx';
+import AuthScreens from './Stacks/AuthScreens.jsx';
 
-export function App() {
-  const [alterLogo, setAlterLogo] = useState(false)
+function App() {
+  const [token, setToken] = useState<string | null>(null);
+  
+  const handleLogin = (userToken: string) => {
+    console.log('User logged in with token:', userToken);
+    setToken(userToken);
+  };
 
-  useEffect(() => {
-    console.info('Hello, ReactLynx')
-  }, [])
-
-  const onTap = useCallback(() => {
-    'background only'
-    setAlterLogo(!alterLogo)
-  }, [alterLogo])
+  const handleLogout = () => {
+    console.log('User logged out');
+    setToken(null);
+  };
 
   return (
-    <view>
-      <view className='Background' />
-      <view className='App'>
-        <view className='Banner'>
-          <view className='Logo' bindtap={onTap}>
-            {alterLogo
-              ? <image src={reactLynxLogo} className='Logo--react' />
-              : <image src={lynxLogo} className='Logo--lynx' />}
-          </view>
-          <text className='Title'>React</text>
-          <text className='Subtitle'>on Lynx</text>
-        </view>
-        <view className='Content'>
-          <image src={arrow} className='Arrow' />
-          <text className='Description'>Tap the logo and have fun!</text>
-          <text className='Hint'>
-            Edit<text style={{ fontStyle: 'italic' }}>{' src/App.tsx '}</text>
-            to see updates!
-          </text>
-        </view>
-        <view style={{ flex: 1 }}></view>
-      </view>
+    <view> {/* Assuming 'view' is a valid LynxJS component */}
+      {/* Use MemoryRouter since it's not a browser environment */}
+      <MemoryRouter> 
+        <Routes>
+          {token === null ? (
+            <>
+              <Route path="/auth/*" element={<AuthScreens handleLogin={handleLogin} />} />
+              {/* Fallback for any non-matched auth paths */}
+              <Route path="*" element={<Navigate to="/auth/signin" replace />} />
+            </>
+          ) : (
+            <>
+              <Route path="/app/*" element={<AppScreens handleLogout={handleLogout} />} />
+              {/* Fallback for any non-matched app paths */}
+              <Route path="*" element={<Navigate to="/app/home" replace />} />
+            </>
+          )}
+          {/* 
+            A direct route to "/" can also be useful as an ultimate fallback,
+            directing to the correct section based on token state.
+          */}
+          <Route path="/" element={<Navigate to={token === null ? "/auth/signin" : "/app/home"} replace />} />
+        </Routes>
+      </MemoryRouter>
     </view>
-  )
+  );
 }
+
+export default App;

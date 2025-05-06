@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "jsx": "preserve",
+    "allowJs": true, 
 
     "module": "node16",
     "moduleResolution": "node16",
